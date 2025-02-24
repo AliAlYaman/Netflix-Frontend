@@ -29,7 +29,7 @@ This project is the frontend component of a Netflix clone, built using React.js,
 
     ```bash
     git clone [https://github.com/AliAlYaman/Netflix-Frontend.git]
-    cd [Netflix-Frontend]
+    cd Netflix-Frontend
     ```
 
 2.  **Install dependencies:**
