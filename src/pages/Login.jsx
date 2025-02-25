@@ -1,7 +1,53 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
+import { login } from '../services/api/api';
 import { Navbar } from "../components/Navbar";
 import background from "../../assets/backgrounds/background.png";
 
+// Custom hook for form state management
+const useForm = (initialState) => {
+  const [values, setValues] = useState(initialState);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  return [values, handleChange];
+};
+
 export const Login = () => {
+  const [formValues, handleChange] = useForm({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  // Regex for basic email validation
+  const emailIsValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { email, password } = formValues;
+
+    // Enhanced validation for email and password
+    if (!emailIsValid(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    try {
+      await login(email, password);
+      navigate('/login'); 
+    } catch (err) {
+      setError('Invalid email or password. Please try again.'); // Display error message
+      console.error(err);
+    }
+  };
+
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-black">
       {/* Background Image */}
@@ -21,14 +67,25 @@ export const Login = () => {
             <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-[32px]">
               Sign In
             </h1>
-            <form className="space-y-4 sm:space-y-6">
+
+            {/* Display error message */}
+            {error && (
+              <div className="text-sm text-red-500 text-center">
+                {error}
+              </div>
+            )}
+
+            <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 {/* Email or Phone Number Field */}
                 <div className="relative">
                   <input
                     id="email"
+                    name="email"
                     type="text"
                     placeholder=" "
+                    value={formValues.email}
+                    onChange={handleChange}
                     className="peer h-12 w-full rounded bg-zinc-800 px-4 pt-4 text-base text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-red-600 sm:h-14"
                   />
                   <label
@@ -43,8 +100,11 @@ export const Login = () => {
                 <div className="relative">
                   <input
                     id="password"
+                    name="password"
                     type="password"
                     placeholder=" "
+                    value={formValues.password}
+                    onChange={handleChange}
                     className="peer h-12 w-full rounded bg-zinc-800 px-4 pt-4 text-base text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-red-600 sm:h-14"
                   />
                   <label
@@ -95,7 +155,7 @@ export const Login = () => {
               {/* Sign Up Link */}
               <p className="text-sm sm:text-base">
                 New to Netflix?{" "}
-                <a href="" className="text-white hover:underline font-bold">
+                <a href="/signup" className="text-white hover:underline font-bold">
                   Sign up now
                 </a>
               </p>
