@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { login } from '../services/api/api';
 import { Navbar } from "../components/Navbar";
-import background from "../../assets/backgrounds/background.png";
+import background from "../../assets/backgrounds/landingpage-background.png";
 
 // Custom hook for form state management
 const useForm = (initialState) => {
@@ -16,7 +16,7 @@ const useForm = (initialState) => {
   return [values, handleChange];
 };
 
-export const Login = () => {
+const Login = () => {
   const [formValues, handleChange] = useForm({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ export const Login = () => {
 
     try {
       await login(email, password);
-      navigate('/login'); 
+      navigate('/'); 
     } catch (err) {
       setError('Invalid email or password. Please try again.'); // Display error message
       console.error(err);
@@ -174,3 +174,6 @@ export const Login = () => {
     </div>
   );
 };
+
+
+export default Login;

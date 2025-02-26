@@ -1,10 +1,13 @@
 import axios from "axios";
 
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
 // Create an axios instance with custom configuration
-export const api = axios.create({
+ const api = axios.create({
   baseURL: "http://localhost:8000", // Replace with your API's base URL
+  withCredentials: true, // Important to include credentials for cookies
+  withXSRFToken: true,
+  headers: {
+    Accept: "application/json",
+  },  
 });
 
 export const login = async (email, password) => {
@@ -27,3 +30,6 @@ export const login = async (email, password) => {
     console.log(e);
   }
 };
+
+
+export default api;
